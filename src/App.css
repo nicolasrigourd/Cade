@@ -1,0 +1,1421 @@
+
+/* ===========================================
+   Reset de estilos y configuraciones base
+=========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+/* Estilos base para el body */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #111;
+ 
+  color: #fff;             /* Texto en blanco */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.main-content {
+  padding-bottom: 80px; /* Ajusta este valor según la altura real de tu footer */
+}
+
+/* ===========================================
+           Estilos para el Navbar
+=========================================== */
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color:black; */
+    background-color: #4caf50; 
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-logo img {
+    height: 50px;
+    width: 120px;
+    border-radius: 5px;
+  }
+  
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-links li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-links li a:hover {
+    color: #041705;  /* Verde al pasar el mouse */
+  }
+  
+  /* Estilos nuevos para el perfil */
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .profile-name {
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  
+  .logout-button {
+    background-color: #f39c12; /* Fondo naranja */
+    border: none;
+    color: #fff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background-color: #d9820c;
+  }
+  
+  /* Si no está logueado se usa la imagen de perfil (se conserva la parte original, en caso de necesitarla) */
+  .navbar-profile img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 2px solid #f39c12;  /* Borde naranja */
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  
+  .navbar-profile img:hover {
+    border-color: #d9820c;  /* Naranja más oscuro en hover */
+  }
+  
+  /*======================= ESTILOS MODAL LOGIN=============*/
+  .login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .login-modal-content {
+    background: #222;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    color: #fff;
+  }
+  
+ /* En el contenedor del modal */
+.modal-container {
+  perspective: 800px;
+}
+
+.login-modal-image {
+  display: block;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1rem auto;
+ 
+  transform-style: preserve-3d;
+  animation: spinHorizontal 10s linear infinite;
+}
+
+  
+  
+  .login-modal-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-modal-field {
+    margin-bottom: 1rem;
+  }
+  
+  .login-modal-field input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: none;
+    font-size: 1rem;
+  }
+  
+  .login-modal-button {
+    background-color: #f39c12; /* Fondo naranja */
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-modal-button:hover {
+    background-color: #d9820c;
+  }
+  
+  .login-modal-error {
+    color: red;
+    margin-bottom: 1rem;
+  }
+  
+/*==========ESTILOS IMPUT==================*/
+.imput-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto;      /* Auto centra horizontalmente y deja 20px de margen vertical */
+  padding: 10px;
+  border: 2px solid #e6e3de; /* Naranja sutil */
+  border-radius: 10px;       /* Bordes redondeados */
+  background-color: #1c1c1c; /* Fondo oscuro minimalista */
+  max-width: 1000px;          /* Ancho máximo para mantenerlo centrado */
+}
+
+
+.time-display {
+  font-size: 1rem;
+  color: #fff;
+  text-transform: capitalize;
+  white-space: nowrap;       /* Evita que se rompa la línea */
+}
+
+.input-field {
+  flex: 1;                   /* Ocupa el espacio restante */
+  display: flex;
+  justify-content: center;
+}
+
+.input-field input {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #4caf50;
+  border-radius: 10px;
+  background-color: #333;
+  color: #fff;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.input-field input:focus {
+  border-color:#4caf50;     /* Un tono naranja más claro en foco */
+}
+
+
+
+
+/*===================== ITEM CADETE=====================*/
+
+
+.spectacular-card {
+  background-color: #2c2c2c;       
+  border: 2px solid orange;       
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 600px;               
+  width: 90%;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.spectacular-card:hover {
+  transform: scale(1.20);         
+}
+
+
+.card-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+
+.card-info span {
+  margin-right: 10px;
+}
+
+
+.card-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+
+.btn-imprimir {
+  background-color: #3498db;
+  color: #fff;
+}
+
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+;
+
+
+
+/*====================== LISTADO CADETES =========================*/
+/* src/Components/CadeteList.css */
+
+
+
+.cadete-list {
+  border: 2px solid green; /* Pequeño borde verde */
+  border-radius: 10px;
+  background-color: #2c2c2c; /* Gama de colores oscuros */
+  color: #fff;
+  padding: 16px;
+  margin: 16px auto;
+  max-width: 800px;
+}
+
+.item-sin-moviles {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+}
+.cadete-list > .btn-basico {
+  background-color: #4caf50; /* Verde base */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: block;           /* Para que se centre con margin auto */
+  margin: 20px auto;        /* Centrado y separación vertical */
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.cadete-list > .btn-basico:hover {
+  background-color: #43a047;
+}
+
+/*================== ESTILOS LISTADO CADETES.JSX===================*/
+.sin-moviles-disp{
+  color: #007bff;
+  margin-left: 650px;
+  font-size: 1.5rem;
+}
+/* Contenedor general centrado para el listado */
+.lc-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Contenedor para el botón de agregar */
+.add-button-container {
+  width: 100%;
+  max-width: 650px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Estilo para el botón de agregar */
+.btn-add {
+  padding: 8px 12px;
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Contenedor de tarjetas en columna con ancho máximo */
+.lc-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 650px;
+}
+
+/* Indicador de carga */
+.lc-loading {
+  text-align: center;
+  font-size: 18px;
+  color: #eee;
+  padding: 20px;
+}
+
+/* Tarjeta individual de cadete */
+.cadete-card {
+  background-color: #333;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: #eee;
+}
+
+/* Encabezado de la tarjeta */
+.cadete-card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Sección de detalles (para vista y edición) */
+.cadete-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Cada bloque de detalle en modo vista */
+.cadete-details > div {
+  flex: 1 1 45%;
+  min-width: 150px;
+  text-align: left;
+}
+
+/* Inputs en modo edición */
+.cadete-card input[type="text"],
+.cadete-card input[type="number"] {
+  width: 100%;
+  padding: 6px;
+  margin: 4px 0;
+  border: 1px solid #777;
+  border-radius: 4px;
+  background-color: #444;
+  color: #eee;
+}
+
+/* Contenedor para los botones */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+/* Botones generales */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Botón para editar (naranja) */
+.btn-edit {
+  background-color: #f39c12;
+  color: #fff;
+}
+
+/* Botón para eliminar (rojo) */
+.btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+/* Botón para bloquear/desbloquear (azul) */
+.btn-toggle {
+  background-color: #3498db;
+  color: #fff;
+}
+
+/* Botón para guardar cambios (verde) */
+.btn-save {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+/* Botón para cancelar edición (gris) */
+.btn-cancel {
+  background-color: #95a5a6;
+  color: #fff;
+}
+
+/* Efecto hover para los botones */
+.btn:hover {
+  opacity: 0.9;
+}
+
+
+
+/*=================ESTILOS MODAL DEUDA=======================*/
+
+
+/* Modal overlay con animación */
+.modal-deuda-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.4s ease;
+}
+
+/* Contenedor del modal con animación */
+.modal-deuda {
+  background: #222; /* Fondo oscuro */
+  color: #fff;      /* Texto blanco */
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  animation: fadeInModal 0.4s ease;
+}
+
+/* Keyframes para animación del overlay */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Keyframes para animación del modal */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Encabezado del modal */
+.modal-deuda-header {
+  background-color: #4caf50; /* Fondo verde */
+  color: #000;               /* Texto negro */
+  padding: 8px;              /* Menos padding para que sea más pequeño */
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 10px;
+  font-size: 0.9rem;         /* Texto más pequeño en el encabezado */
+}
+
+/* Estilos de textos y títulos */
+.modal-deuda h2,
+.modal-deuda h3 {
+  margin-bottom: 10px;
+}
+
+.modal-deuda p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* Botones dispuestos horizontalmente */
+.modal-deuda-botones {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.opcion p {
+  margin-bottom: 5px;
+  font-size: 0.9rem; /* Tamaño más pequeño y fino */
+  font-weight: 300;
+}
+
+/* Estilos para el botón cerrar */
+.modal-cerrar {
+  margin-top: 15px;
+  background: #f44336;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Botones de opciones */
+.boton-efectivo,
+.boton-mercadopago,
+.boton-prorroga {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.boton-efectivo {
+  background-color: #4caf50;
+}
+
+.boton-mercadopago {
+  background-color: #007bff;
+}
+
+.boton-prorroga {
+  background-color: #ff9800;
+}
+/*================ ESTILOS MODAL EFECTIVO==========================/*
+
+/* Overlay del modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Contenedor del modal */
+.modal {
+  background: #222; /* Fondo oscuro */
+  color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  text-align: center;
+  animation: fadeInModal 0.4s ease;
+}
+
+/* Animación para el modal */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Encabezado del modal */
+.modal-header {
+  background-color: #4caf50; /* Fondo verde */
+  color: #000; /* Texto negro */
+  padding: 8px;
+  border-radius: 8px 8px 0 0;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+/* Opciones del modal: dispuestas horizontalmente */
+.modal-options {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+/* Cada opción */
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.option p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Input para pago parcial */
+.modal-options input {
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 120px;
+  text-align: center;
+}
+
+/* Botón cerrar */
+.modal-close {
+  margin-top: 15px;
+  background: #f44336;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* Estilos para el modal de confirmación (overlay) */
+.modal-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+/* Contenedor del modal de confirmación */
+.modal-confirm {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Acciones del modal de confirmación */
+.modal-confirm-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-confirm-actions button {
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.modal-confirm-actions button:first-child {
+  background-color: #4caf50;
+}
+
+.modal-confirm-actions button:last-child {
+  background-color: #f44336;
+}
+
+.modal-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.modal-confirm {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-confirm-header {
+  background-color: #4caf50; /* Fondo verde */
+  color: #000;               /* Texto negro */
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.modal-confirm-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-confirm-actions button {
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.modal-confirm-actions button:first-child {
+  background-color: #4caf50;
+}
+
+.modal-confirm-actions button:last-child {
+  background-color: #f44336;
+}
+
+
+
+/* Quitar flechas para navegadores Webkit */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/*=================== ESTILLOS BASE DIARIA============================*/
+
+.base-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 10px;
+  padding-right: 180px;  /* Reserva espacio para el botón */
+  position: relative;    /* Permite posicionar elementos hijos de forma absoluta */
+}
+
+.base-left,
+.base-right {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  color: #000;
+}
+
+.base-left h2,
+.base-right h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.base-table,
+.pagos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.base-table th,
+.base-table td,
+.pagos-table th,
+.pagos-table td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: left;
+  color: #000;
+}
+
+.base-table th,
+.pagos-table th {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.base-table tr:nth-child(even),
+.pagos-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+  color: #000;
+}
+
+.base-table tr:hover,
+.pagos-table tr:hover {
+  background-color: #ddd;
+}
+
+.pagos-day {
+  margin-bottom: 20px;
+}
+
+.pagos-day h3 {
+  color: #000;
+}
+
+.base-date {
+  color: #000;
+}
+
+/* Nuevo contenedor para el botón, subido mucho más: 200px desde abajo */
+.base-button-wrapper {
+  position: absolute;
+  right: 10px;
+  bottom: 200px;
+}
+
+.subir-base-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.subir-base-btn:hover {
+  background-color: #43a047;
+}
+/*  ==================== BUSCADOR BASE =======================*/
+/* BuscadorBases.css */
+
+/*================ ESTILOS CAJA ====================*/
+/* Estilos para pantalla (vista ampliada) */
+.caja-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.caja-header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+/* Botón Ingresar Pago con bordes más cuadrados */
+.caja-ingresar-button {
+  display: block;
+  margin: 0 auto 20px auto;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.caja-ingresar-button:hover {
+  background-color: #218838;
+}
+
+.caja-no-pagos {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+  margin: 20px 0;
+}
+
+.caja-pagos-day {
+  margin-bottom: 20px;
+}
+
+.caja-pagos-day h3 {
+  color: #000;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.caja-pagos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.caja-pagos-table th,
+.caja-pagos-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  color: #000;
+  font-size: 14px;
+}
+
+.caja-pagos-table th {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.caja-pagos-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.caja-pagos-table tr:hover {
+  background-color: #ddd;
+}
+
+/* Contenedor para el botón de imprimir, alineado a la derecha */
+.caja-button-container {
+  text-align: right;
+  margin-top: 20px;
+}
+
+/* Botón Imprimir Caja */
+.caja-imprimir-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.caja-imprimir-button:hover {
+  background-color: #0069d9;
+}
+
+/* Reglas para impresión: adaptar a 80mm de ancho */
+@media print {
+  .caja-container {
+    width: 80mm;
+    margin: 0 auto;
+    padding: 5mm;
+    border: none;
+    border-radius: 0;
+  }
+  .caja-header {
+    font-size: 16px;
+    margin-bottom: 5mm;
+  }
+  .caja-ingresar-button,
+  .caja-imprimir-button {
+    padding: 4px 8px;
+    font-size: 10px;
+    margin-bottom: 5mm;
+  }
+  .caja-no-pagos {
+    margin: 5mm 0;
+  }
+  .caja-pagos-day h3 {
+    font-size: 12px;
+    margin-bottom: 3mm;
+  }
+  .caja-pagos-table th,
+  .caja-pagos-table td {
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+  .caja-button-container {
+    margin-top: 5mm;
+  }
+}
+
+/*=============== ESTILOS GOOGLEMAPS========================*/
+/* src/Components/GoogleMaps.css */
+.google-maps-container {
+  width: 100%;
+  max-width: 800px; /* Puedes ajustar este valor según tus necesidades */
+  margin: 0 auto;
+}
+
+.google-maps-container iframe {
+  width: 100%;
+  height: 500px; /* Ajusta la altura a tu conveniencia */
+  border: 0;
+}
+
+
+/* ====================== ESTILOS RECORDATORIO =================*/
+/* Estilos para el formulario del recordatorio */
+.recordatorio-form {
+  background: #222;           /* Fondo oscuro, igual que el modal */
+  color: #fff;                /* Texto blanco */
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.recordatorio-form h2 {
+  margin-bottom: 20px;
+}
+
+.recordatorio-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.recordatorio-form input,
+.recordatorio-form textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  margin-bottom: 10px;
+  background: #333;           /* Un tono un poco más claro para distinguir el input */
+  color: #fff;
+}
+
+/* Botón para programar la alarma */
+.recordatorio-submit {
+  background: #2196f3;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Estilos para la ventana modal del recordatorio (cuando se activa la alarma) */
+.recordatorio-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.4s ease;
+}
+
+.recordatorio-modal {
+  background: #222;
+  color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  animation: fadeInModal 0.4s ease;
+}
+
+/* Animaciones, reutilizando la misma idea */
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Estilos para los botones dentro del modal */
+.recordatorio-botones {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.recordatorio-button {
+  color: #000;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Botón para Aceptar: se puede usar el mismo color verde que en el header de tus modales */
+.recordatorio-button.accept {
+  background: #4caf50;
+}
+
+/* Botón para Posponer: se le asigna un color distintivo, por ejemplo, naranja */
+.recordatorio-button.postpone {
+  background: #ff9800;
+}
+
+/* Opcional: efecto hover para los botones */
+.recordatorio-button:hover {
+  opacity: 0.8;
+}
+
+
+
+/* Estilos para el listado de alarmas */
+.alarma-indicador {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.alarma-indicador h3 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.alarma-item {
+  background: #333;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.alarma-item p {
+  margin: 5px 0;
+}
+
+/* Estilos para los botones */
+.recordatorio-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.recordatorio-button.postpone {
+  background: #ff9800;
+  color: #000;
+}
+
+.recordatorio-button.accept {
+  background: #4caf50;
+  color: #000;
+}
+
+.recordatorio-button.eliminar {
+  background: #f44336; /* Rojo */
+  color: #fff;
+  margin-top: 10px;
+}
+
+
+
+/*======================= MODAL NUEVO PAGO====================*/
+/* Overlay del modal */
+.np-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Contenedor del modal para el formulario */
+.np-modal {
+  background: #2c2c2c; /* Fondo oscuro */
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Cabecera del formulario */
+.np-modal-header {
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: #1a1a1a;
+  color: #fff;
+  text-align: center;
+}
+
+/* Cuerpo del formulario */
+.np-modal-body {
+  padding: 20px;
+  color: #fff;
+}
+
+/* Contenedor de cada input */
+.np-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+/* Etiqueta de cada input */
+.np-input-container label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #ccc;
+}
+
+/* Estilo de los inputs */
+.np-input-container input {
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #444;
+  color: #fff;
+}
+
+/* Acciones del formulario */
+.np-modal-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Botón del formulario */
+.np-modal-actions button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.np-modal-actions button:hover {
+  background-color: #43a047;
+}
+
+/* Estilos para la vista de confirmación (reutilizando clases similares a modal confirm) */
+.modal-confirm {
+  background: #2c2c2c;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+}
+
+.modal-confirm-header {
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: #4caf50;
+}
+
+.modal-confirm-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.modal-confirm-actions button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #fff;
+}
+
+.modal-confirm-actions button:hover {
+  background-color: #43a047;
+}
+
+/* Estilos para la vista de procesamiento */
+.modal-confirm-body {
+  margin-top: 20px;
+}
+
+.spinner {
+  margin: 20px auto;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/*============== FOOTER ===================*/
+
+.footer {
+  background-color:#4caf50;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  
+  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100; 
+}
+
