@@ -54,8 +54,8 @@ const ModalEfectivo = ({ empleado, onClose, onConfirm, onModalOpen }) => {
       <div className="modal-deuda">
         <div className="modal-deuda-header">
           <p>
-            <strong>ID:</strong> {empleado.id} | <strong>Nombre:</strong>{" "}
-            {empleado.nombre} {empleado.apellido}
+            <strong>ID:</strong> {empleado.id} | <strong></strong>{" "}
+            {empleado["nombre y apellido"]}
           </p>
         </div>
         <h2>Pago en Efectivo</h2>

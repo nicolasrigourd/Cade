@@ -77,7 +77,7 @@ const Ticket = ({ empleado }) => {
       <hr style={{ borderTop: '1px dashed #000', margin: '5px 0' }} />
 
       <img
-        src="/public/logotapioca.png"
+        src="/logotapioca.png"
         crossOrigin="anonymous"
         alt="Logo Tapioca"
         style={{ width: '50%', display: 'block' }}

@@ -583,7 +583,7 @@ body {
 
 .opcion p {
   margin-bottom: 5px;
-  font-size: 0.9rem; /* Tamaño más pequeño y fino */
+  font-size: 1rem; /* Tamaño más pequeño y fino */
   font-weight: 300;
 }
 
@@ -611,14 +611,19 @@ body {
 
 .boton-efectivo {
   background-color: #4caf50;
+  font-size: 20px;
+  margin-right: 5px;
 }
 
 .boton-mercadopago {
   background-color: #007bff;
+  font-size: 20px;
+  margin-right: 5px;
 }
 
 .boton-prorroga {
   background-color: #ff9800;
+  font-size: 20px;
 }
 /*================ ESTILOS MODAL EFECTIVO==========================/*
 

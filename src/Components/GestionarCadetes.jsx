@@ -32,21 +32,10 @@ const GestionarCadetes = () => {
       if (localData) {
         const data = JSON.parse(localData);
         setBdCadetes(data);
-        // Crear "baseauxiliar" con los datos filtrados
-        const filteredData = data.map((cadete) => ({
-          id: cadete.id,
-          nombre: cadete.nombre,
-          apellido: cadete.apellido,
-          deuda: cadete.deuda,
-          bloqueado: cadete.bloqueado,
-          movilidad: cadete.movilidad,
-          observaciones: cadete.observaciones,
-        }));
-        localStorage.setItem("baseauxiliar", JSON.stringify(filteredData));
         console.log("Cargando cadetes desde localStorage:", data);
         setDeployMessage("deploy existente");
       } else {
-        // Si no existe en localStorage, se consulta Firestore
+        // Si no existe "bdcadetes", se consulta Firestore y se crean "bdcadetes", "baseDia" y "pagos"
         const querySnapshot = await getDocs(collection(db, "cadetes"));
         const data = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -54,19 +43,42 @@ const GestionarCadetes = () => {
         }));
         setBdCadetes(data);
         localStorage.setItem("bdcadetes", JSON.stringify(data));
-        // Crear "baseauxiliar" con los datos filtrados
-        const filteredData = data.map((cadete) => ({
-          id: cadete.id,
-          nombre: cadete.nombre,
-          apellido: cadete.apellido,
-          deuda: cadete.deuda,
-          bloqueado: cadete.bloqueado,
-          movilidad: cadete.movilidad,
-          observaciones: cadete.observaciones,
-        }));
-        localStorage.setItem("baseauxiliar", JSON.stringify(filteredData));
+
+        // Generar una fecha fija a partir del momento actual (fecha de creación)
+        const today = new Date();
+        const day = today.getDate().toString().padStart(2, "0");
+        const month = (today.getMonth() + 1).toString().padStart(2, "0");
+        const year = today.getFullYear();
+        const fullDateStr = `${day}-${month}-${year}`; // Esta es la fecha fija de creación
+
+        // Crear "baseDia" a partir de la información inicial de cadetes
+        const baseDiaObj = {
+          fecha: fullDateStr,
+          base: data
+            .map((cadete) => ({
+              id: cadete.id,
+              "nombre y apellido": cadete["nombre y apellido"],
+              deuda: cadete.deuda,
+              base: cadete.base || 0,
+              total: Number(cadete.base || 0) + Number(cadete.deuda || 0),
+              multa: cadete.multa || 0,
+            }))
+            .sort((a, b) => Number(a.id) - Number(b.id)),
+        };
+        localStorage.setItem("baseDia", JSON.stringify(baseDiaObj));
+
+        // Inicializar "pagos" con la fecha fija, con un array vacío
+        const pagosObj = { [fullDateStr]: [] };
+        localStorage.setItem("pagos", JSON.stringify(pagosObj));
+
         console.log("La base de datos se trajo correctamente desde Firestore:", data);
         setDeployMessage("deploy confirmado");
+      }
+
+      // Si ya existe "baseDia" en localStorage, se utiliza sin modificarla
+      const storedBaseDia = localStorage.getItem("baseDia");
+      if (storedBaseDia) {
+        setBaseDia(JSON.parse(storedBaseDia));
       }
     } catch (error) {
       console.error("Error fetching cadetes:", error);
@@ -245,12 +257,11 @@ const GestionarCadetes = () => {
           }}
           onConfirm={(importe) => {
             console.log("Confirmar pago:", importe);
-            // Luego de confirmar el pago parcial, actualizamos bdCadetes desde localStorage...
+            // Luego de confirmar el pago parcial, actualizamos bdCadetes y sincronizamos habilitados
             const storedBdCadetes = localStorage.getItem("bdcadetes");
             if (storedBdCadetes) {
               const updatedBdCadetes = JSON.parse(storedBdCadetes);
               setBdCadetes(updatedBdCadetes);
-              // Sincronizamos habilitados actualizando el objeto correspondiente con el nuevo contador
               const updatedHabilitados = habilitados.map((cadete) => {
                 const updatedCadete = updatedBdCadetes.find(
                   (c) => c.id.toString() === cadete.id.toString()
@@ -305,6 +316,12 @@ const GestionarCadetes = () => {
   
   // Estado para mostrar el modal de nuevo pago
   const [showModalNuevoPago, setShowModalNuevoPago] = useState(false);
+
+  // Obtener el usuario logueado y el operador (username)
+  const loggedUser = localStorage.getItem("loggedUser")
+    ? JSON.parse(localStorage.getItem("loggedUser"))
+    : null;
+  const operador = loggedUser ? loggedUser.username : "Desconocido";
 
   const fetchCadetes = async () => {
     try {
@@ -558,6 +575,7 @@ const GestionarCadetes = () => {
 
       {showModalNuevoPago && (
         <ModalNuevoPago
+          operador={operador}  // Se pasa el operador al modal para que registre el pago con el username
           onCancel={() => setShowModalNuevoPago(false)}
           onPaymentRegistered={(payment) => {
             console.log("Pago registrado:", payment);
