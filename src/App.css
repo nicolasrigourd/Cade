@@ -621,10 +621,6 @@ body {
   margin-right: 5px;
 }
 
-.boton-prorroga {
-  background-color: #ff9800;
-  font-size: 20px;
-}
 /*================ ESTILOS MODAL EFECTIVO==========================/*
 
 /* Overlay del modal */
@@ -823,6 +819,10 @@ body {
   background-color: #f44336;
 }
 
+button:disabled {
+  opacity: 0.1;
+  cursor: not-allowed;
+}
 
 
 /* Quitar flechas para navegadores Webkit */

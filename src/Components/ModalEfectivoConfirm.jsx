@@ -1,121 +1,64 @@
-/*
-// src/Components/ModalEfectivoConfirm.jsx
+
 import React from "react";
-import { updateDoc, doc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
 
 const ModalEfectivoConfirm = ({ empleado, amount, type, onConfirm, onCancel }) => {
-  // Verificamos que se haya pasado el empleado
   if (!empleado) {
     console.error("Empleado no definido en ModalEfectivoConfirm");
     return null;
   }
 
-  const handleConfirm = async () => {
-    const now = new Date();
-    const fecha = now.toLocaleDateString(); // Ej.: "31/03/2025"
-    const hora = now.toLocaleTimeString();   // Ej.: "14:22:35"
-
-    const newPayment = {
-      id: empleado.id,
-      monto: amount,
-      fecha,
-      hora,
-    };
-
-    // Registro de pagos en localStorage bajo la clave "pagos"
-    const storedPayments = localStorage.getItem("pagos");
-    let pagos = storedPayments ? JSON.parse(storedPayments) : {};
-    if (pagos[fecha]) {
-      pagos[fecha].push(newPayment);
-    } else {
-      pagos[fecha] = [newPayment];
-    }
-    localStorage.setItem("pagos", JSON.stringify(pagos));
-
-    // Actualizar Firestore: se calcula el total pendiente y se actualizan deuda y multa
-    const totalDeuda = Number(empleado.deuda) + Number(empleado.multa);
-    const pago = parseFloat(amount);
-    let newDeuda, newMulta;
-    if (pago >= totalDeuda) {
-      newDeuda = 0;
-      newMulta = 0;
-    } else {
-      newDeuda = empleado.deuda - pago;
-      if (newDeuda < 0) newDeuda = 0;
-      newMulta = empleado.multa; // Aquí podrías ajustar la lógica si quieres modificar la multa en pagos parciales
-    }
-    try {
-      await updateDoc(doc(db, "cadetes", empleado.id), {
-        deuda: newDeuda,
-        multa: newMulta,
-      });
-      if (onConfirm) {
-        onConfirm(amount);
-      } else {
-        alert(`Pago confirmado para ${empleado["nombre y apellido"]}: $${amount}`);
-      }
-      onCancel();
-    } catch (error) {
-      console.error("Error updating cadete payment:", error);
-      alert("Error al actualizar el pago, por favor inténtalo de nuevo.");
-    }
+  // Función para formatear la fecha a "DD-MM-YYYY"
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
-  return (
-    <div className="modal-confirm-overlay">
-      <div className="modal-confirm">
-        <div className="modal-confirm-header">
-          <p>OPERADOR</p>
-        </div>
-        <h2>
-          {type === "total"
-            ? `Recibiste el importe de: $${amount}`
-            : `Recibiste: $${amount}`}
-        </h2>
-        <p>Este importe se computará como un pago en efectivo en el sistema.</p>
-        <div className="modal-confirm-actions">
-          <button onClick={handleConfirm}>SI, LO RECIBÍ</button>
-          <button onClick={onCancel}>CERRAR</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default ModalEfectivoConfirm;
-*/
-// src/Components/ModalEfectivoConfirm.jsx
-import React from "react";
-// import { updateDoc, doc } from "firebase/firestore";
-// import { db } from "../firebaseConfig";
-
-const ModalEfectivoConfirm = ({ empleado, amount, type, onConfirm, onCancel }) => {
-  if (!empleado) {
-    console.error("Empleado no definido en ModalEfectivoConfirm");
-    return null;
-  }
-
   const handleConfirm = async () => {
     const now = new Date();
-    const fecha = now.toLocaleDateString(); // Ej.: "31/03/2025"
-    const hora = now.toLocaleTimeString();   // Ej.: "14:22:35"
+    const fechaEstandar = formatDate(now); // Ejemplo: "03-04-2025"
+    const fechaAlternativa = now.toLocaleDateString(); // Ejemplo: "3/4/2025"
+    
+    // Obtener el operador desde localStorage (suponiendo que está guardado en "loggedUser")
+    const loggedUser = localStorage.getItem("loggedUser")
+      ? JSON.parse(localStorage.getItem("loggedUser"))
+      : {};
+    const operador = loggedUser.username || "Desconocido";
 
+    const hora = now.toLocaleTimeString(); // Ej.: "14:22:35"
+    
+    // Crear el objeto de pago con la propiedad operador
     const newPayment = {
       id: empleado.id,
       monto: amount,
-      fecha,
+      fecha: fechaEstandar, // Usaremos el formato estándar si es posible
       hora,
-      detalles: ""
+      detalles: "",
+      operador
     };
 
     // Registro de pagos en localStorage bajo la clave "pagos"
     const storedPayments = localStorage.getItem("pagos");
     let pagos = storedPayments ? JSON.parse(storedPayments) : {};
-    if (pagos[fecha]) {
-      pagos[fecha].push(newPayment);
+
+    // Determinar la clave a usar:
+    // Si ya existe una entrada en formato estándar, usarla.
+    // Sino, si existe en formato alternativo, usar esa.
+    // Sino, crear la clave con el formato estándar.
+    let keyUsar = "";
+    if (pagos[fechaEstandar]) {
+      keyUsar = fechaEstandar;
+    } else if (pagos[fechaAlternativa]) {
+      keyUsar = fechaAlternativa;
     } else {
-      pagos[fecha] = [newPayment];
+      keyUsar = fechaEstandar;
+    }
+    
+    if (pagos[keyUsar]) {
+      pagos[keyUsar].push(newPayment);
+    } else {
+      pagos[keyUsar] = [newPayment];
     }
     localStorage.setItem("pagos", JSON.stringify(pagos));
 
@@ -148,24 +91,6 @@ const ModalEfectivoConfirm = ({ empleado, amount, type, onConfirm, onCancel }) =
           localStorage.setItem("bdcadetes", JSON.stringify(bdCadetes));
         }
       }
-
-      // --- AQUI IRÍA LA ACTUALIZACIÓN EN FIRESTORE, PERO POR AHORA SOLO TRABAJAMOS SOBRE bdcadetes ---
-      /*
-      if (pago >= totalDeuda) {
-        await updateDoc(doc(db, "cadetes", empleado.id), {
-          deuda: 0,
-          multa: 0
-        });
-      } else {
-        const remainingDebt = empleado.deuda - pago;
-        await updateDoc(doc(db, "cadetes", empleado.id), {
-          deuda: 0,
-          multa: empleado.multa,
-          contador: 3,
-          deudaPendiente: remainingDebt
-        });
-      }
-      */
 
       if (onConfirm) {
         onConfirm(amount);

@@ -125,8 +125,8 @@ const ModalDeuda = ({ empleado, onClose, onOptionSelected, onModalOpen }) => {
   // Listener para teclas en el modal principal
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Si se presiona la tecla "2" o "3", se alterna el modal de servicio
-      if (e.key === "2" || e.key === "3") {
+      // Si se presiona la tecla "2" 
+      if (e.key === "2" ) {
         setShowServicioModal((prev) => !prev);
         return;
       }
@@ -191,15 +191,7 @@ const ModalDeuda = ({ empleado, onClose, onOptionSelected, onModalOpen }) => {
               Pago con MercadoPago
             </button>
           </div>
-          <div className="opcion">
-            <p>Presione tecla 3</p>
-            <button
-              onClick={() => setShowServicioModal((prev) => !prev)}
-              className="boton-prorroga"
-            >
-              Solicitar Prórroga
-            </button>
-          </div>
+          
         </div>
         <button className="modal-cerrar" onClick={onClose}>
           Cerrar
