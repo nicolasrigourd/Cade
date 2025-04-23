@@ -29,7 +29,7 @@ const Ticket = ({ empleado }) => {
       fontSize: '14px'
     }}>
       <img
-        src="/public/logocadeteria.png"
+        src="/logocadeteria.png"
         crossOrigin="anonymous"
         alt="Logo"
         style={{ width: '40%', margin: '0 auto 10px', display: 'block' }}
@@ -69,8 +69,8 @@ const Ticket = ({ empleado }) => {
       <hr style={{ borderTop: '1px dashed #000', margin: '5px 0' }} />
 
       <div style={{ textAlign: 'center', fontSize: '12px', marginTop: '15px' }}>
-        <p><strong>Contacto:</strong> 422-9292 o 421-0220</p>
-        <p><strong>WhatsApp:</strong> 385 5375984</p>
+        <p><strong>Contacto:</strong> 422-9292 </p>
+        <p><strong>WhatsApp:</strong> 385 5707199</p>
        
       </div>
 
