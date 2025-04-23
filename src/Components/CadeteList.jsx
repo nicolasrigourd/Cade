@@ -3,143 +3,52 @@
 import React, { useRef } from "react";
 import ItemCadete from "./ItemCadete";
 import BasicTicket from "./BasicTicket";
-import html2canvas from "html2canvas";
-import qz from "qz-tray";
 
-const CadeteList = ({ data, removeHabilitado, onPrint, onFocusAfterDelete }) => {
+const CadeteList = ({ data, removeHabilitado, onFocusAfterDelete }) => {
   const ticketRef = useRef(null);
 
-  const handlePrintTicket = async () => {
+  const handlePrintTicket = () => {
     if (!ticketRef.current) return;
 
-    const canvas = await html2canvas(ticketRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff"
-    });
+    // Captura el HTML del ticket básico
+    const printContents = ticketRef.current.innerHTML;
+    // Abre una ventana nueva para imprimir
+    const printWindow = window.open("", "", "width=300,height=600");
+    printWindow.document.write("<html><head><title>Ticket Básico</title>");
+    printWindow.document.write(`
+      <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        .ticket-container { width: 80mm; }
+      </style>
+    `);
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(`<div class="ticket-container">${printContents}</div>`);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
 
-    const base64Image = canvas
-      .toDataURL("image/png")
-      .replace(/^data:image\/png;base64,/, "");
-
-    try {
-      await qz.websocket.connect();
-      const printer = await qz.printers.find("XP-80C");
-      const config = qz.configs.create(printer, {
-        encoding: "CP437",
-        margins: 2,
-        orientation: "horizontal",
-        pageWidth: 8.5
-      });
-
-      const dataToPrint = [
-        {
-          type: "image",
-          format: "base64",
-          data: base64Image
-        }
-      ];
-
-      await qz.print(config, dataToPrint);
-      await qz.websocket.disconnect();
-      console.log("Impresión exitosa");
-    } catch (error) {
-      console.error("Error en la impresión:", error);
-    }
+    // Espera un poco antes de lanzar la impresión
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+      // Devuelve el foco al input principal de Gestión
+      onFocusAfterDelete && onFocusAfterDelete();
+    }, 500);
   };
 
   if (data.length === 0) {
     return (
       <div className="cadete-list">
         <p className="sin-moviles-disp">No hay Moviles disponibles</p>
-       
-        <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }} ref={ticketRef}>
+
+        
+        <div
+          style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
+          ref={ticketRef}
+        >
           <BasicTicket />
         </div>
-        <button className="btn-basico" onClick={handlePrintTicket} >Imprimir Ticket Básico</button>
-      </div>
-    );
-  }
 
-  return (
-    <div className="cadete-list">
-      {data.map((cadete) => (
-        <ItemCadete
-          key={cadete.id}
-          empleado={cadete}
-          removeHabilitado={removeHabilitado}
-          onPrint={onPrint}
-          onFocusAfterDelete={onFocusAfterDelete}
-        />
-      ))}
-    </div>
-  );
-};
-
-export default CadeteList;
-*/
-// src/Components/CadeteList.jsx
-import React, { useRef } from "react";
-import ItemCadete from "./ItemCadete";
-import BasicTicket from "./BasicTicket";
-import html2canvas from "html2canvas";
-import qz from "qz-tray";
-
-const CadeteList = ({ data, removeHabilitado, onPrint, onFocusAfterDelete }) => {
-  const ticketRef = useRef(null);
-
-  const handlePrintTicket = async () => {
-    if (!ticketRef.current) return;
-
-    const canvas = await html2canvas(ticketRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff"
-    });
-
-    const base64Image = canvas
-      .toDataURL("image/png")
-      .replace(/^data:image\/png;base64,/, "");
-
-    try {
-      await qz.websocket.connect();
-      const printer = await qz.printers.find("XP-80C");
-      const config = qz.configs.create(printer, {
-        encoding: "CP437",
-        margins: 2,
-        orientation: "horizontal",
-        pageWidth: 8.5
-      });
-
-      const dataToPrint = [
-        {
-          type: "image",
-          format: "base64",
-          data: base64Image
-        }
-      ];
-
-      await qz.print(config, dataToPrint);
-      await qz.websocket.disconnect();
-      console.log("Impresión exitosa");
-      // Devolver el foco al input con id "employeeId"
-      document.getElementById("employeeId")?.focus();
-    } catch (error) {
-      console.error("Error en la impresión:", error);
-      document.getElementById("employeeId")?.focus();
-    }
-  };
-
-  if (data.length === 0) {
-    return (
-      <div className="cadete-list">
-        <p className="sin-moviles-disp">No hay Moviles disponibles</p>
-        {/* Ticket oculto solo para impresión */}
-        <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }} ref={ticketRef}>
-          <BasicTicket />
-        </div>
         <button className="btn-basico" onClick={handlePrintTicket}>
           Imprimir Ticket Básico
         </button>
@@ -154,7 +63,83 @@ const CadeteList = ({ data, removeHabilitado, onPrint, onFocusAfterDelete }) => 
           key={cadete.id}
           empleado={cadete}
           removeHabilitado={removeHabilitado}
-          onPrint={onPrint}
+          onFocusAfterDelete={onFocusAfterDelete}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default CadeteList;
+*/
+// src/Components/CadeteList.jsx
+import React, { useRef } from "react";
+import ItemCadete from "./ItemCadete";
+import BasicTicket from "./BasicTicket";
+import { updateCadeteStat } from "../utils/stats";
+
+const CadeteList = ({ data, removeHabilitado, onFocusAfterDelete }) => {
+  const ticketRef = useRef(null);
+
+  const handlePrintTicket = () => {
+    if (!ticketRef.current) return;
+
+    // Captura el HTML del ticket básico
+    const printContents = ticketRef.current.innerHTML;
+    // Abre una ventana nueva para imprimir
+    const printWindow = window.open("", "", "width=300,height=600");
+    printWindow.document.write("<html><head><title>Ticket Básico</title>");
+    printWindow.document.write(`
+      <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        .ticket-container { width: 80mm; }
+      </style>
+    `);
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(`<div class="ticket-container">${printContents}</div>`);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
+
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+
+      // Actualizar estadísticas globales de ticket básico
+      updateCadeteStat('basic_ticket', 'printCount');
+
+      // Devolver foco al input principal
+      onFocusAfterDelete && onFocusAfterDelete();
+    }, 500);
+  };
+
+  if (data.length === 0) {
+    return (
+      <div className="cadete-list">
+        <p className="sin-moviles-disp">No hay Moviles disponibles</p>
+
+        {/* Ticket oculto para impresión */}
+        <div
+          style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
+          ref={ticketRef}
+        >
+          <BasicTicket />
+        </div>
+
+        <button className="btn-basico" onClick={handlePrintTicket}>
+          Imprimir Ticket Básico
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="cadete-list">
+      {data.map((cadete) => (
+        <ItemCadete
+          key={cadete.id}
+          empleado={cadete}
+          removeHabilitado={removeHabilitado}
           onFocusAfterDelete={onFocusAfterDelete}
         />
       ))}

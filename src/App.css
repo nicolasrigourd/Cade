@@ -306,9 +306,6 @@ body {
 
 
 /*====================== LISTADO CADETES =========================*/
-/* src/Components/CadeteList.css */
-
-
 
 .cadete-list {
   border: 2px solid green; /* Pequeño borde verde */
@@ -345,7 +342,7 @@ body {
 
 /*================== ESTILOS LISTADO CADETES.JSX===================*/
 .sin-moviles-disp{
-  color: #007bff;
+  color: #e9eaeb;
   margin-left: 650px;
   font-size: 1.5rem;
 }

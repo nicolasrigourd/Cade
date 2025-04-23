@@ -1,75 +1,56 @@
 /*
-import React, { useRef } from "react";
+// src/Components/ItemCadete.jsx
+import React, { useRef, useState } from "react";
 import Ticket from "./Ticket";
-import html2canvas from 'html2canvas';
-import qz from 'qz-tray';
 
 const ItemCadete = ({ empleado, removeHabilitado, onFocusAfterDelete }) => {
   const ticketRef = useRef(null);
+  const [printDisabled, setPrintDisabled] = useState(false);
 
   const handleDeleteLocal = () => {
+    setPrintDisabled(false);
     removeHabilitado(empleado.id);
-    if (onFocusAfterDelete) onFocusAfterDelete();
+    onFocusAfterDelete && onFocusAfterDelete();
   };
 
-  const handlePrint = async () => {
+  const handlePrint = () => {
     if (!ticketRef.current) return;
+    setPrintDisabled(true);
 
-    const canvas = await html2canvas(ticketRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff'
-    });
+    // Obtener HTML del ticket
+    const printContents = ticketRef.current.innerHTML;
+    // Abrir nueva ventana para impresión
+    const printWindow = window.open("", "", "width=300,height=600");
+    printWindow.document.write("<html><head><title>Ticket</title>");
+    // Añadir estilos para 80mm de ancho
+    printWindow.document.write(`
+      <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        .ticket { width: 80mm; }
+      </style>
+    `);
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(`<div class='ticket'>${printContents}</div>`);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
 
-    const base64Image = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, '');
-
-    try {
-      await qz.websocket.connect();
-      const printer = await qz.printers.find("XP-80C");
-      const config = qz.configs.create(printer, {
-        encoding: "CP437",
-        margins: 2,
-        orientation: 'horizontal',
-        pageWidth: 8.5
-      });
-
-      const data = [{
-        type: 'image',
-        format: 'base64',
-        data: base64Image
-      }];
-
-      await qz.print(config, data);
-      await qz.websocket.disconnect();
-      console.log("Impresión exitosa");
-
-      // Devuelve el foco al input principal luego de imprimir
-      document.getElementById("employeeId")?.focus();
-
-    } catch (error) {
-      console.error("Error en la impresión:", error);
-      // También devuelve el foco en caso de error para mejor UX
-      document.getElementById("employeeId")?.focus();
-    }
+    // Esperar a que cargue y ejecutar impresión
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+      // Devolver foco al input principal
+      onFocusAfterDelete && onFocusAfterDelete();
+    }, 500);
   };
 
   return (
     <div className="spectacular-card">
       <div className="card-info">
-        <span className="card-id">
-          <strong>ID:</strong> {empleado.id}
-        </span>
-        <span className="card-name">
-          <strong>Nombre :</strong> {empleado["nombre y apellido"]}
-        </span>
-        <span className="card-movilidad">
-          <strong>Movilidad:</strong> {empleado.movilidad}
-        </span>
-        <span className="card-time">
-          <strong>Hora:</strong> {empleado.horario}
-        </span>
-       
+        <span><strong>ID:</strong> {empleado.id}</span>
+        <span><strong>Nombre:</strong> {empleado["nombre y apellido"]}</span>
+        <span><strong>Movilidad:</strong> {empleado.movilidad}</span>
+        <span><strong>Hora:</strong> {empleado.horario}</span>
       </div>
 
       
@@ -80,7 +61,11 @@ const ItemCadete = ({ empleado, removeHabilitado, onFocusAfterDelete }) => {
       </div>
 
       <div className="card-buttons">
-        <button className="btn btn-imprimir" onClick={handlePrint}>
+        <button
+          className="btn btn-imprimir"
+          onClick={handlePrint}
+          disabled={printDisabled}
+        >
           Imprimir
         </button>
         <button className="btn btn-delete" onClick={handleDeleteLocal}>
@@ -92,92 +77,70 @@ const ItemCadete = ({ empleado, removeHabilitado, onFocusAfterDelete }) => {
 };
 
 export default ItemCadete;
-
 */
 // src/Components/ItemCadete.jsx
 import React, { useRef, useState } from "react";
 import Ticket from "./Ticket";
-import html2canvas from "html2canvas";
-import qz from "qz-tray";
+import { updateCadeteStat } from "../utils/stats";
 
 const ItemCadete = ({ empleado, removeHabilitado, onFocusAfterDelete }) => {
   const ticketRef = useRef(null);
   const [printDisabled, setPrintDisabled] = useState(false);
 
+  // Maneja la eliminación y actualiza estadísticas
   const handleDeleteLocal = () => {
-    // Al eliminar, se vuelve a habilitar el botón de imprimir
+    // Incrementar contador de eliminaciones en las estadísticas diarias
+    updateCadeteStat(empleado.id, "deletionCount");
+
+    // Reactivar el botón y eliminar al cadete de la lista
     setPrintDisabled(false);
     removeHabilitado(empleado.id);
-    if (onFocusAfterDelete) onFocusAfterDelete();
+    onFocusAfterDelete && onFocusAfterDelete();
   };
 
-  const handlePrint = async () => {
+  // Maneja impresión nativa y actualiza estadísticas
+  const handlePrint = () => {
     if (!ticketRef.current) return;
-
-    // Deshabilitamos el botón para evitar múltiples impresiones
     setPrintDisabled(true);
 
-    const canvas = await html2canvas(ticketRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-    });
+    // Captura el HTML del ticket
+    const printContents = ticketRef.current.innerHTML;
+    const printWindow = window.open("", "", "width=300,height=600");
+    printWindow.document.write("<html><head><title>Ticket</title>");
+    printWindow.document.write(`
+      <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        .ticket { width: 80mm; }
+      </style>
+    `);
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(`<div class='ticket'>${printContents}</div>`);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
 
-    const base64Image = canvas
-      .toDataURL("image/png")
-      .replace(/^data:image\/png;base64,/, "");
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
 
-    try {
-      await qz.websocket.connect();
-      const printer = await qz.printers.find("XP-80C");
-      const config = qz.configs.create(printer, {
-        encoding: "CP437",
-        margins: 2,
-        orientation: "horizontal",
-        pageWidth: 8.5,
-      });
+      // Incrementar contador de impresiones en las estadísticas diarias
+      updateCadeteStat(empleado.id, "printCount");
 
-      const data = [
-        {
-          type: "image",
-          format: "base64",
-          data: base64Image,
-        },
-      ];
-
-      await qz.print(config, data);
-      await qz.websocket.disconnect();
-      console.log("Impresión exitosa");
-
-      // Devuelve el foco al input principal luego de imprimir
-      document.getElementById("employeeId")?.focus();
-    } catch (error) {
-      console.error("Error en la impresión:", error);
-      // En caso de error, se mantiene el botón deshabilitado o se puede re-habilitar según la lógica deseada
-      // Por ejemplo: setPrintDisabled(false);
-      document.getElementById("employeeId")?.focus();
-    }
+      // Devolver foco al input principal
+      onFocusAfterDelete && onFocusAfterDelete();
+    }, 500);
   };
 
   return (
     <div className="spectacular-card">
       <div className="card-info">
-        <span className="card-id">
-          <strong>ID:</strong> {empleado.id}
-        </span>
-        <span className="card-name">
-          <strong>Nombre :</strong> {empleado["nombre y apellido"]}
-        </span>
-        <span className="card-movilidad">
-          <strong>Movilidad:</strong> {empleado.movilidad}
-        </span>
-        <span className="card-time">
-          <strong>Hora:</strong> {empleado.horario}
-        </span>
+        <span><strong>ID:</strong> {empleado.id}</span>
+        <span><strong>Nombre:</strong> {empleado["nombre y apellido"]}</span>
+        <span><strong>Movilidad:</strong> {empleado.movilidad}</span>
+        <span><strong>Hora:</strong> {empleado.horario}</span>
       </div>
 
-      {/* Ticket oculto solo para impresión */}
+      {/* Ticket oculto para impresión */}
       <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
         <div ref={ticketRef}>
           <Ticket empleado={empleado} />

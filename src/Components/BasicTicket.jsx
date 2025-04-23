@@ -1,3 +1,4 @@
+
 // src/Components/BasicTicket.jsx
 import React from 'react';
 
@@ -91,3 +92,4 @@ const BasicTicket = () => {
 };
 
 export default BasicTicket;
+
