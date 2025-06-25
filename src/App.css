@@ -617,6 +617,89 @@ body {
   font-size: 20px;
   margin-right: 5px;
 }
+/*================= ESTILOS MODAL DEUDA ALTA ================*/
+.modal-deuda-alta-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+}
+
+.modal-deuda-alta {
+  background: #222;
+  color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.modal-deuda-alta-header {
+  background-color: #4caf50;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.modal-deuda-alta-warning {
+  color: #ff4c4c;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.modal-deuda-alta-minimo {
+  font-size: 1.6rem;
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.modal-deuda-alta-input {
+  width: 60%;
+  padding: 10px;
+  font-size: 1rem;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: none;
+  text-align: center;
+}
+
+.modal-deuda-alta-error {
+  color: #f44336;
+  margin-top: 10px;
+}
+
+.modal-deuda-alta-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.modal-deuda-alta-actions button {
+  padding: 10px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-aceptar {
+  background-color: #4caf50;
+}
+
+.btn-cerrar {
+  background-color: #f44336;
+}
 
 /*================ ESTILOS MODAL EFECTIVO==========================/*
 
@@ -922,7 +1005,17 @@ input[type=number]::-webkit-outer-spin-button {
   display: block;
   transition: background-color 0.3s ease;
 }
-
+.actualizar-firebase {
+  background-color: #e77a26;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.3s ease;
+}
 .subir-base-btn:hover {
   background-color: #43a047;
 }
