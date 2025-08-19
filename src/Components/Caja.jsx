@@ -257,6 +257,7 @@ const Caja = () => {
 
 export default Caja;
 */
+/*
 // src/Components/Caja.jsx
 import React, { useState, useEffect, useRef } from "react";
 import ModalNuevoPago from "./ModalNuevoPago";
@@ -499,6 +500,249 @@ const Caja = () => {
         {isAdmin && (
           <button className="caja-imprimir-button" onClick={handlePrintYCerrarCaja}>
             Imprimir Ticket
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Caja;
+*/
+// src/Components/Caja.jsx
+import React, { useState, useEffect, useRef } from "react";
+import ModalNuevoPago from "./ModalNuevoPago";
+
+const CajaContent = React.forwardRef(
+  ({ pagos, getWeekday, operador, isAdmin }, ref) => {
+    const keys = Object.keys(pagos);
+    const fixedDate =
+      keys.find((key) => pagos[key] && pagos[key].length > 0) || keys[0] || "";
+
+    const { efectivoTotal, otrosTotal } = Object.values(pagos).reduce(
+      (acc, pagosDelDia) => {
+        pagosDelDia.forEach((pago) => {
+          const monto = parseFloat(pago.monto) || 0;
+          if (!pago.detalles) {
+            acc.efectivoTotal += monto;
+          } else {
+            acc.otrosTotal += monto;
+          }
+        });
+        return acc;
+      },
+      { efectivoTotal: 0, otrosTotal: 0 }
+    );
+
+    return (
+      <div ref={ref}>
+        <h1 className="caja-header">Caja</h1>
+        <h2 style={{ color: "black" }}>{operador}</h2>
+        {fixedDate ? (
+          <div className="caja-fixed-date">
+            <h3 className="caja-pagos-date" style={{ color: "black" }}>
+              {getWeekday(fixedDate).charAt(0).toUpperCase() +
+                getWeekday(fixedDate).slice(1)}{" "}- {fixedDate}
+            </h3>
+          </div>
+        ) : (
+          <p className="caja-no-pagos">No hay información de fecha fija en pagos.</p>
+        )}
+        {fixedDate ? (
+          pagos[fixedDate] && pagos[fixedDate].length > 0 ? (
+            <div className="caja-pagos-day">
+              <table className="caja-pagos-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Monto</th>
+                    <th>Hora</th>
+                    <th>Tipo de Pago</th>
+                    {isAdmin && <th>Operador</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {pagos[fixedDate].map((pago, index) => {
+                    const tipoDePago = pago.detalles || pago.tipo || "efectivo";
+                    return (
+                      <tr key={index}>
+                        <td>{pago.id}</td>
+                        <td>{pago.monto}</td>
+                        <td>{pago.hora}</td>
+                        <td className="tipo-pago">{tipoDePago}</td>
+                        {isAdmin && <td>{pago.operador || "Sin registrar"}</td>}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="caja-no-pagos">No hay pagos registrados para este día.</p>
+          )
+        ) : null}
+        {Object.keys(pagos).length > 0 && (
+          <div
+            className="caja-totals"
+            style={{
+              border: "1px solid red",
+              marginTop: "20px",
+              padding: "10px",
+              color: "black",
+            }}
+          >
+            <h3>Totales</h3>
+            <p>Efectivo: {efectivoTotal}</p>
+            <p>Otros: {otrosTotal}</p>
+            <p>Total: {efectivoTotal + otrosTotal}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+const Caja = () => {
+  const [pagos, setPagos] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [details, setDetails] = useState(""); // se deja para no tocar más lógica
+  const [cajaCerrada, setCajaCerrada] = useState(false);
+  const componentRef = useRef();
+
+  const loggedUser = localStorage.getItem("loggedUser")
+    ? JSON.parse(localStorage.getItem("loggedUser"))
+    : null;
+  const operador = loggedUser ? loggedUser.username : "Desconocido";
+  const isAdmin = loggedUser && loggedUser.role === "admin";
+
+  useEffect(() => {
+    if (!isAdmin) {
+      const storedCajaCerrada = sessionStorage.getItem(
+        "cajaCerrada_" + operador
+      );
+      setCajaCerrada(storedCajaCerrada === "true");
+    }
+  }, [operador, isAdmin]);
+
+  useEffect(() => {
+    const storedPagos = localStorage.getItem("pagos");
+    if (storedPagos) {
+      try {
+        const parsedPagos = JSON.parse(storedPagos);
+        setPagos(parsedPagos);
+      } catch (error) {
+        console.error("Error al parsear 'pagos':", error);
+        setPagos({});
+      }
+    }
+  }, []);
+
+  const filteredPagos = isAdmin
+    ? pagos
+    : Object.keys(pagos).reduce((acc, key) => {
+        acc[key] = pagos[key].filter((pago) => pago.operador === operador);
+        return acc;
+      }, {});
+
+  const getWeekday = (fecha) => {
+    const fechaFormateada = fecha.includes("-") ? fecha.replace(/-/g, "/") : fecha;
+    const parts = fechaFormateada.split("/");
+    if (parts.length !== 3) return "";
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const dateObj = new Date(year, month, day);
+    return dateObj.toLocaleDateString("es-ES", { weekday: "long" });
+  };
+
+  const handleIngresarPago = () => {
+    setShowModal(true);
+  };
+
+  // ⬇️ CAMBIO CLAVE: Caja solo refresca pagos; NO escribe ni pisa detalles/tipo
+  const handlePaymentRegistered = () => {
+    try {
+      const storedPagos = localStorage.getItem("pagos");
+      const parsed = storedPagos ? JSON.parse(storedPagos) : {};
+      setPagos(parsed);
+    } catch (error) {
+      console.error("Error al refrescar 'pagos' luego de registrar:", error);
+      setPagos({});
+    }
+    setShowModal(false);
+  };
+
+  const handlePrintYCerrarCaja = () => {
+    const printContents = componentRef.current.innerHTML;
+    const printWindow = window.open("", "", "height=600,width=800");
+    printWindow.document.write("<html><head><title>Imprimir Ticket</title>");
+    printWindow.document.write(
+      '<link rel="stylesheet" type="text/css" href="Caja.css">'
+    );
+    printWindow.document.write(
+      `<style>.tipo-pago { margin-left: 10px; }</style>`
+    );
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(printContents);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+      if (!isAdmin) {
+        setCajaCerrada(true);
+        sessionStorage.setItem("cajaCerrada_" + operador, "true");
+      }
+    }, 500);
+  };
+
+  return (
+    <div className="caja-container">
+      <div className="caja-actions">
+        <button
+          className="caja-ingresar-button"
+          onClick={handleIngresarPago}
+          disabled={cajaCerrada && !isAdmin}
+        >
+          Ingresar Pago
+        </button>
+      </div>
+
+      {showModal && (
+        <ModalNuevoPago
+          operador={operador}
+          onCancel={() => setShowModal(false)}
+          onPaymentRegistered={handlePaymentRegistered}
+          showDetails={true}
+        />
+      )}
+
+      {!cajaCerrada || isAdmin ? (
+        <div ref={componentRef}>
+          <CajaContent
+            pagos={filteredPagos}
+            getWeekday={getWeekday}
+            operador={operador}
+            isAdmin={isAdmin}
+          />
+        </div>
+      ) : (
+        <div style={{ padding: "20px", textAlign: "center", color: "black" }}>
+          <h2>Caja Cerrada</h2>
+          <p>Debes loguearte nuevamente para activar la caja.</p>
+        </div>
+      )}
+
+      <div className="caja-button-container">
+        {!cajaCerrada && !isAdmin && (
+          <button className="caja-imprimir-button" onClick={handlePrintYCerrarCaja}>
+            Cerrar Caja
+          </button>
+        )}
+        {isAdmin && (
+          <button className="caja-imprimir-button" onClick={handlePrintYCerrarCaja}>
+            Imprimir Caja
           </button>
         )}
       </div>
