@@ -104,7 +104,16 @@ body {
   .navbar-profile img:hover {
     border-color: #d9820c;  /* Naranja más oscuro en hover */
   }
-  
+  .navbar-link-button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+.navbar-link-button:hover { text-decoration: underline; }
+
   /*======================= ESTILOS MODAL LOGIN=============*/
   .login-modal-overlay {
     position: fixed;
@@ -1575,6 +1584,135 @@ input[type=number]::-webkit-outer-spin-button {
 .modalobservaciones-actions button:active {
   transform: translateY(1px);
 }
+
+/* ======================= MODAL BLOQUEO (ADMIN) ======================= */
+.modalbloqueo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.modalbloqueo {
+  background: #2c2c2c;
+  color: #fff;
+  border-radius: 12px;
+  width: 92vw;
+  max-width: 700px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.45);
+}
+
+.modalbloqueo-header {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 14px 18px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.modalbloqueo-body {
+  padding: 18px 20px;
+  overflow: auto;
+}
+
+.modalbloqueo-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.modalbloqueo-row input,
+.modalbloqueo-row textarea {
+  background: #444;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+  outline: none;
+}
+
+.modalbloqueo-row input:focus,
+.modalbloqueo-row textarea:focus {
+  border-color: #888;
+}
+
+.modalbloqueo-status {
+  margin-top: 2px;
+  opacity: .9;
+}
+
+.modalbloqueo-status.blocked { color: #ff6b6b; }
+.modalbloqueo-status.unblocked { color: #9be69b; }
+
+.modalbloqueo-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  background: #303030;
+  border: 1px solid #3b3b3b;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.modalbloqueo-obssnippet label {
+  display: block;
+  margin-bottom: 6px;
+  color: #ccc;
+}
+
+.modalbloqueo-obssnippet pre {
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 10px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  max-height: 180px;
+  overflow: auto;
+  color: #f1f1f1;
+}
+
+.modalbloqueo-error {
+  color: #ffb3b3;
+}
+
+.modalbloqueo-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: #262626;
+}
+
+.modalbloqueo-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  transition: transform .06s ease, background-color .2s ease;
+}
+
+.modalbloqueo-actions button:hover { filter: brightness(1.05); }
+.modalbloqueo-actions button:active { transform: translateY(1px); }
+
+.modalbloqueo-actions .primary-block { background: #c62828; }   /* rojo */
+.modalbloqueo-actions .primary-block:hover { background: #b71c1c; }
+.modalbloqueo-actions .primary-unblock { background: #2e7d32; } /* verde */
+.modalbloqueo-actions .primary-unblock:hover { background: #1b5e20; }
+.modalbloqueo-actions button:last-child { background: #555; }
+.modalbloqueo-actions button:last-child:hover { background: #4a4a4a; }
 
 /*============== FOOTER ===================*/
 
