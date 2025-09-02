@@ -1,4 +1,4 @@
-
+/*
 // src/Components/ModalEfectivo.jsx
 import React, { useState, useEffect, useRef } from "react";
 import ModalEfectivoConfirm from "./ModalEfectivoConfirm";
@@ -87,6 +87,158 @@ const ModalEfectivo = ({ empleado, onClose, onConfirm, onModalOpen }) => {
           Cerrar
         </button>
       </div>
+      {confirmData && (
+        <ModalEfectivoConfirm
+          empleado={empleado} // <== Aquí se pasa el objeto empleado
+          amount={confirmData.amount}
+          type={confirmData.type}
+          onConfirm={(amt) => {
+            if (onConfirm) onConfirm(amt);
+            setConfirmData(null);
+            onClose();
+          }}
+          onCancel={() => setConfirmData(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ModalEfectivo;
+*/
+// src/Components/ModalEfectivo.jsx
+import React, { useState, useEffect, useRef } from "react";
+import ModalEfectivoConfirm from "./ModalEfectivoConfirm";
+
+const ModalEfectivo = ({ empleado, onClose, onConfirm, onModalOpen }) => {
+  const totalDeuda = Number(empleado.deuda) + Number(empleado.multa);
+  const [inputEnabled, setInputEnabled] = useState(false); // ← se mantiene pero no se activa
+  const [partialAmount, setPartialAmount] = useState("");
+  const [confirmData, setConfirmData] = useState(null);
+  const [showNoDisponible, setShowNoDisponible] = useState(false); // ← submodal “no disponible”
+  const inputRef = useRef(null);
+
+  // Llama a onModalOpen para quitar el foco del input (si se pasa)
+  useEffect(() => {
+    if (onModalOpen) {
+      onModalOpen();
+    }
+  }, [onModalOpen]);
+
+  const handleKeyDown = (e) => {
+    if (confirmData) return;
+
+    // Si está abierto el submodal "no disponible", solo Enter/Esc lo cierran
+    if (showNoDisponible) {
+      if (e.key === "Escape" || e.key === "Enter") {
+        e.preventDefault();
+        setShowNoDisponible(false);
+      }
+      return;
+    }
+
+    if (inputEnabled && e.key !== "Escape") return;
+
+    if (e.key === "Escape") {
+      onClose();
+    } else if (e.key === "1") {
+      // Opción 1: Pago total
+      setConfirmData({ amount: totalDeuda, type: "total" });
+    } else if (e.key === "2") {
+      // Opción 2: momentáneamente deshabilitada → mostrar submodal
+      e.preventDefault();
+      setShowNoDisponible(true);
+
+      /* ===========================================================
+         FLUJO PARCIAL ORIGINAL (DESHABILITADO TEMPORALMENTE)
+         -----------------------------------------------------------
+         e.preventDefault();
+         setInputEnabled(true);
+         setPartialAmount("");
+         =========================================================== */
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // Incluye showNoDisponible y confirmData en deps para manejar bien el submodal
+  }, [confirmData, inputEnabled, totalDeuda, showNoDisponible]);
+
+  useEffect(() => {
+    if (inputEnabled && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputEnabled]);
+
+  const handlePartialSubmit = (e) => {
+    if (e.key === "Enter" && partialAmount !== "") {
+      setConfirmData({ amount: partialAmount, type: "partial" });
+    }
+  };
+
+  return (
+    <div className="modal-deuda-overlay">
+      <div className="modal-deuda">
+        <div className="modal-deuda-header">
+          <p>
+            <strong>ID:</strong> {empleado.id} | <strong></strong>{" "}
+            {empleado["nombre y apellido"]}
+          </p>
+        </div>
+        <h2>Pago en Efectivo</h2>
+        <h3>Total a pagar: ${totalDeuda}</h3>
+        <hr />
+        <div className="modal-options">
+          <div className="option">
+            <p>Opción 1: Pago Total</p>
+            <p>Total: ${totalDeuda}</p>
+          </div>
+
+          {/* Opción 2: PARCIAL blureada / deshabilitada */}
+          <div
+            className="option"
+            aria-disabled="true"
+            style={{
+              pointerEvents: "none",
+              filter: "blur(2px) opacity(0.6)",
+              userSelect: "none",
+            }}
+          >
+            <p>Opción 2: Pago Parcial</p>
+            <input
+              ref={inputRef}
+              type="number"
+              value={partialAmount}
+              onChange={(e) => setPartialAmount(e.target.value)}
+              disabled={!inputEnabled}
+              onKeyDown={handlePartialSubmit}
+            />
+          </div>
+        </div>
+
+        {/* Texto guía: podés dejar este o ajustarlo */}
+        {inputEnabled ? (
+          <p>Ingresa el monto a pagar</p>
+        ) : (
+          <p>Presiona la tecla 1 para confirmar el pago total</p>
+        )}
+
+        <button className="modal-cerrar" onClick={onClose}>
+          Cerrar
+        </button>
+      </div>
+
+      {/* Submodal: “Opción no disponible” (se cierra con Enter/Esc) */}
+      {showNoDisponible && (
+        <div className="modal-deuda-overlay">
+          <div className="modal-deuda" style={{ textAlign: "center" }}>
+            <h2>Opción no disponible</h2>
+            <p>Presione Enter o Esc para volver</p>
+          </div>
+        </div>
+      )}
+
       {confirmData && (
         <ModalEfectivoConfirm
           empleado={empleado} // <== Aquí se pasa el objeto empleado
