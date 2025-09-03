@@ -1,20 +1,18 @@
-
-// Import the functions you need from the SDKs you need
+// src/firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // Importa getFirestore
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAZX9kyjsLJq-DlB-mTJYXGAd_t5Q4OuvE",
-  authDomain: "basecadeteria.firebaseapp.com",
-  projectId: "basecadeteria",
-  storageBucket: "basecadeteria.firebasestorage.app",
-  messagingSenderId: "390353313407",
-  appId: "1:390353313407:web:a71390e8185b41f16da94a"
+  apiKey: import.meta.env.VITE_FB_API_KEY,
+  authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FB_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FB_APP_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Inicializa Firestore y exporta la instancia
 export const db = getFirestore(app);
+export const auth = getAuth(app);
